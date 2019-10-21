@@ -179,29 +179,47 @@ Now it's time to push the Rewrite and Responder policies on Tier1 ADC (VPX) usin
 
 1. Deploy the CRD to push the Rewrite and Responder policies in to tier-1-adc in default namespace.
 
-   ```
-   kubectl create -f crd-rewrite-responder.yaml
-   ```
+```
+kubectl create -f crd-rewrite-responder.yaml
+```
 
-1. **Blacklist URLs** Configure the Responder policy on `hotdrink.beverages.com` to block access to the coffee beverage microservice.
+2. **Blacklist URLs** Configure the Responder policy on `hotdrink.beverages.com` to block access to the coffee beverage microservice.
 
-   ```
-   kubectl create -f responderpolicy-hotdrink.yaml -n tier-2-adc
-   ```
+```
+kubectl create -f responderpolicy-hotdrink.yaml -n tier-2-adc
+```
 
    After you deploy the Responder policy, access the coffee page on `https://hotdrink.beverages.com/coffee.php`. Then you receive the following message.
    
    ![cpx-ingress-image16a](https://user-images.githubusercontent.com/48945413/55129538-7f2cad00-513d-11e9-9191-72a385fad377.png)
 
-1. **Header insertion** Configure the Rewrite policy on `https://colddrink.beverages.com` to insert the session ID in the header.
+3. **Header insertion** Configure the Rewrite policy on `https://colddrink.beverages.com` to insert the session ID in the header.
 
-   ```
-   kubectl create -f rewritepolicy-colddrink.yaml -n tier-2-adc
-   ```
+```
+kubectl create -f rewritepolicy-colddrink.yaml -n tier-2-adc
+```
 
    After you deploy the Rewrite policy, access `colddrink.beverages.com` with developer mode enabled on the browser. In Chrome, press F12 and preserve the log in network category to see the session ID, which is inserted by the Rewrite policy on tier-1-adc (VPX).
 
    ![cpx-ingress-image16b](https://user-images.githubusercontent.com/48945413/55129567-9075b980-513d-11e9-9926-d1207d7d1e16.png)
+
+
+**Configure Rate limiting policy in Tier 1 ADC using Kubernetes CRD deployment**
+
+How do I throttle the incoming request rate per client IP?
+
+You can apply the rate limiting policy to ingress ADC (VPX) using the rat limiting CRD.
+
+1. Deploy the CRD to push the rate limiting policies in to tier-1-adc
+
+```
+kubectl create -f crd-rate-limit.yaml
+```
+2. Deploy the rate limiting policy to control the rate of ingress traffic per client IP
+
+```
+kubectl create -f rate-limit-example.yaml
+```
 
 ## Section G (Packer flow Visualizer - How does North-South traffic flows in microservices)
 
